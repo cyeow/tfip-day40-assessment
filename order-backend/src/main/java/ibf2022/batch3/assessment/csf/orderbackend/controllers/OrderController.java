@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +63,7 @@ public class OrderController {
 	@GetMapping(path = "/orders/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getOrdersByEmail(@PathVariable String email) {
 		List<PizzaOrder> orders = orderSvc.getPendingOrdersByEmail(email);
-		
+
 		if (orders.size() > 0) {
 			JsonArrayBuilder ab = Json.createArrayBuilder();
 			orders.forEach(o -> {
@@ -86,6 +87,18 @@ public class OrderController {
 	}
 
 	// TODO: Task 7 - DELETE /api/order/<orderId>
+	@DeleteMapping(path = "/order/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> markAsDelivered(@PathVariable String orderId) {
+		if (orderSvc.markOrderDelivered(orderId)) {
+			return ResponseEntity.ok("{}");
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(
+						Json.createObjectBuilder()
+								.add("error",
+										"Error encountered updating the delivery status of order id " + orderId + ".")
+								.build().toString());
+	}
 
 	private PizzaOrder stringToPizzaOrder(String json) {
 		JsonObject o = Json.createReader(new StringReader(json)).readObject();

@@ -11,7 +11,7 @@ import { PizzaService } from '../pizza.service';
 })
 export class OrdersComponent implements OnInit {
   email!: string
-  
+
   activatedRoute = inject(ActivatedRoute)
   pizzaSvc = inject(PizzaService)
 
@@ -19,6 +19,15 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.email = this.activatedRoute.snapshot.params['email']
+    this.ordersPending$ = this.pizzaSvc.getOrders(this.email);
+  }
+
+  markDelivered(orderId: string): void {
+    this.pizzaSvc.delivered(orderId)
+      .then(_ => this.updateOrders())
+  }
+
+  updateOrders(): void {
     this.ordersPending$ = this.pizzaSvc.getOrders(this.email);
   }
 }

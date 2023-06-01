@@ -3,7 +3,7 @@
     <div *ngIf="orders.length > 0 else noOrders">
         <div *ngFor="let o of orders" class="order">
             <h3>Date: {{ o.date }}</h3>
-            <h3>Order Id: {{ o.orderId }} &nbsp;&nbsp; <button type="button">Delivered</button></h3>
+            <h3>Order Id: {{ o.orderId }} &nbsp;&nbsp; <button type="button" (click)="markDelivered(o.orderId)">Delivered</button></h3>
             <h3>${{ o.total | currency }}</h3>
         </div>
     </div>
