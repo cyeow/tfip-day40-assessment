@@ -3,23 +3,23 @@
 -->
 
 <div class="box-it">
-  <form>
+  <form [formGroup]="form" (submit)="placeOrder()">
     <table>
       <tr>
         <td> <label for="name">Name:</label> </td>
         <td>
-          <input type="text" size="50" id="name" placeholder="Your name as your NRIC">
+          <input formControlName="name" type="text" size="50" id="name" placeholder="Your name as your NRIC">
         </td>
       <tr>
         <td> <label for="email">Email:</label> </td>
         <td>
-          <input type="email" size="50" id="email" placeholder="Your email">
+          <input formControlName="email" type="email" size="50" id="email" placeholder="Your email">
         </td>
       </tr>
       <tr>
         <td> <label for="size">Size:</label> </td>
         <td>
-          <input type="range" id="size" min="0" max="3" value="0"
+          <input formControlName="size" type="range" id="size" min="0" max="3" value="0"
               (change)="updateSize(size.value)" #size>
           <span class="ml-1vw">{{ pizzaSize }}</span>
         </td>
@@ -27,14 +27,14 @@
       <tr>
         <td> <label>Base:</label> </td>
         <td>
-          <input type="radio" name="base" value="thin"> Thin Crust
-          <input type="radio" name="base" value="thick"> Thick Crust
+          <input formControlName="base" type="radio" name="base" value="thin"> Thin Crust
+          <input formControlName="base" type="radio" name="base" value="thick"> Thick Crust
         </td>
       </tr>
       <tr>
         <td> <label for="sauce">Sauce:</label> </td>
         <td>
-          <select id="sauce">
+          <select formControlName="sauce" id="sauce">
             <option value="classic">Classic Tomato Sauce</option>
             <option value="signature">Signature Sauce</option>
             <option value="salsa">Salsa Sauce</option>
@@ -45,17 +45,17 @@
       </tr>
       <tr>
         <td> <label>Toppings:</label> </td>
-        <td>
+        <td formGroupName="toppings">
           <div class="space-around">
-            <input type="checkbox" name="toppings" value="chicken"> Chicken
-            <input type="checkbox" name="toppings" value="seafood"> Seafood
-            <input type="checkbox" name="toppings" value="beef"> Beef
-            <input type="checkbox" name="toppings" value="vegetables"> Vegetables
+            <input formControlName="chicken" type="checkbox" name="toppings" value="chicken"> Chicken
+            <input formControlName="seafood" type="checkbox" name="toppings" value="seafood"> Seafood
+            <input formControlName="beef" type="checkbox" name="toppings" value="beef"> Beef
+            <input formControlName="vegetables" type="checkbox" name="toppings" value="vegetables"> Vegetables
           </div>
           <div class="space-around">
-            <input type="checkbox" name="toppings" value="cheese"> Extra Cheese
-            <input type="checkbox" name="toppings" value="arugula"> Arugula (Rocket)
-            <input type="checkbox" name="toppings" value="pineapple"> Pineapple
+            <input formControlName="cheese" type="checkbox" name="toppings" value="cheese"> Extra Cheese
+            <input formControlName="arugula" type="checkbox" name="toppings" value="arugula"> Arugula (Rocket)
+            <input formControlName="pineapple" type="checkbox" name="toppings" value="pineapple"> Pineapple
           </div>
           <div>
             <small>Select toppings, one or more from the above</small>
@@ -65,14 +65,14 @@
       <tr>
         <td><label for="comments">Comments:</label></td>
         <td>
-          <textarea id="comments" cols="40" rows="5"></textarea>
+          <textarea formControlName="comments" id="comments" cols="40" rows="5"></textarea>
         </td>
       </tr>
       <tr>
         <td></td>
         <td>
           <div class="justify-right">
-            <button type="submit">Place Order</button>
+            <button type="submit" [disabled]="form.invalid">Place Order</button>
           </div>
         </td>
       </tr>
