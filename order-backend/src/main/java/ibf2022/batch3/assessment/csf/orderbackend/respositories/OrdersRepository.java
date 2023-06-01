@@ -13,7 +13,12 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.stereotype.Repository;
+
+import com.mongodb.client.model.Updates;
 
 import ibf2022.batch3.assessment.csf.orderbackend.models.PizzaOrder;
 
@@ -21,7 +26,7 @@ import ibf2022.batch3.assessment.csf.orderbackend.models.PizzaOrder;
 public class OrdersRepository {
 
 	@Autowired
-	private MongoTemplate template; 
+	private MongoTemplate template;
 
 	private static final String COLLECTION_ORDERS = "orders";
 	// TODO: Task 3
@@ -61,10 +66,10 @@ public class OrdersRepository {
 	// WARNING: Do not change the method's signature.
 	// Write the native MongoDB query in the comment below
 	// Native MongoDB query here for getPendingOrdersByEmail()
-	// db.orders.aggregate([ 
-	//	{ $match: { delivered: {$in: [null, false]} } }, 
-	//	{ $sort: { date: -1 } }, 
-	//	{ $project: {date:1, total:1, _id:1}}
+	// db.orders.aggregate([
+	// { $match: { delivered: {$in: [null, false]} } },
+	// { $sort: { date: -1 } },
+	// { $project: {date:1, total:1, _id:1}}
 	// ]);
 
 	public List<PizzaOrder> getPendingOrdersByEmail(String email) {
@@ -72,7 +77,9 @@ public class OrdersRepository {
 		SortOperation sOp = Aggregation.sort(Direction.DESC, "date");
 		ProjectionOperation pOp = Aggregation.project("date", "total", "_id");
 
-		List<Document> docResults = template.aggregate(Aggregation.newAggregation(mOp, sOp, pOp), COLLECTION_ORDERS, Document.class).getMappedResults();
+		List<Document> docResults = template
+				.aggregate(Aggregation.newAggregation(mOp, sOp, pOp), COLLECTION_ORDERS, Document.class)
+				.getMappedResults();
 
 		List<PizzaOrder> results = new LinkedList<>();
 		docResults.forEach(d -> {
@@ -82,7 +89,7 @@ public class OrdersRepository {
 			o.setTotal(d.getDouble("total").floatValue());
 			results.add(o);
 		});
-		
+
 		return results;
 	}
 
@@ -90,9 +97,12 @@ public class OrdersRepository {
 	// WARNING: Do not change the method's signature.
 	// Write the native MongoDB query in the comment below
 	// Native MongoDB query here for markOrderDelivered()
-	public boolean markOrderDelivered(String orderId) {
+	//
+	// db.orders.updateOne({_id:'7068d15fd2'},{$set: {"delivered": true}})
 
-		return false;
+	public boolean markOrderDelivered(String orderId) {
+		Query q = new Query().addCriteria(Criteria.where("_id").is(orderId));
+		return template.updateFirst(q, new Update().set("delivered", true), Document.class, COLLECTION_ORDERS) != null;
 	}
 
 }

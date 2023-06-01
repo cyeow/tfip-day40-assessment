@@ -21,12 +21,25 @@ public class AppConfig {
 	@Value("${redis.database}")
 	private Integer redisDB;
 
+    @Value("${redis.username}")
+    private String redisUsername;
+
+    @Value("${redis.password}")
+    private String redisPassword;
+
+
 	// Warning: Do not modify the createTemplate() method; either its method signature 
 	// or its logic. Changing any of these will render any of your assessment task using
 	// this RedisTemplate INVALID
 	@Bean("pending-orders")
 	public RedisTemplate<String, String> createRedisTemplate() {
 		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+
+        if(!redisUsername.isEmpty() && !redisPassword.isEmpty()) {
+            config.setUsername(redisUsername);
+            config.setPassword(redisPassword);
+        }
+		
 		config.setDatabase(redisDB);
 
 		JedisClientConfiguration jedisClient = JedisClientConfiguration

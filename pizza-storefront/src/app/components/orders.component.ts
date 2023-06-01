@@ -25,6 +25,7 @@ export class OrdersComponent implements OnInit {
   markDelivered(orderId: string): void {
     this.pizzaSvc.delivered(orderId)
       .then(_ => this.updateOrders())
+      .catch(err => alert(err.error.error))
   }
 
   updateOrders(): void {
