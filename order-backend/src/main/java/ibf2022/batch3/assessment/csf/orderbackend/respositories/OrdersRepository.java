@@ -1,10 +1,18 @@
 package ibf2022.batch3.assessment.csf.orderbackend.respositories;
 
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import ibf2022.batch3.assessment.csf.orderbackend.models.PizzaOrder;
@@ -53,9 +61,29 @@ public class OrdersRepository {
 	// WARNING: Do not change the method's signature.
 	// Write the native MongoDB query in the comment below
 	// Native MongoDB query here for getPendingOrdersByEmail()
-	public List<PizzaOrder> getPendingOrdersByEmail(String email) {
+	// db.orders.aggregate([ 
+	//	{ $match: { delivered: {$in: [null, false]} } }, 
+	//	{ $sort: { date: -1 } }, 
+	//	{ $project: {date:1, total:1, _id:1}}
+	// ]);
 
-		return null;
+	public List<PizzaOrder> getPendingOrdersByEmail(String email) {
+		MatchOperation mOp = Aggregation.match(Criteria.where("delivered").in(null, false));
+		SortOperation sOp = Aggregation.sort(Direction.DESC, "date");
+		ProjectionOperation pOp = Aggregation.project("date", "total", "_id");
+
+		List<Document> docResults = template.aggregate(Aggregation.newAggregation(mOp, sOp, pOp), COLLECTION_ORDERS, Document.class).getMappedResults();
+
+		List<PizzaOrder> results = new LinkedList<>();
+		docResults.forEach(d -> {
+			PizzaOrder o = new PizzaOrder();
+			o.setOrderId(d.getString("_id"));
+			o.setDate(d.getDate("date"));
+			o.setTotal(d.getDouble("total").floatValue());
+			results.add(o);
+		});
+		
+		return results;
 	}
 
 	// TODO: Task 7

@@ -1,7 +1,18 @@
 <h2>Orders for {{ email }}</h2>
 <div *ngIf="ordersPending$ | async as orders else loading">
-<h3>hello</h3>
+    <div *ngIf="orders.length > 0 else noOrders">
+        <div *ngFor="let o of orders" class="order">
+            <h3>Date: {{ o.date }}</h3>
+            <h3>Order Id: {{ o.orderId }} &nbsp;&nbsp; <button type="button">Delivered</button></h3>
+            <h3>${{ o.total | currency }}</h3>
+        </div>
+    </div>
+    <ng-template #noOrders>
+        You don't have any pending orders! <br>
+        <a [routerLink]="['/']">Is it time to make a new order?</a>
+    </ng-template>
 </div>
 <ng-template #loading>
     <p>Loading...</p>
 </ng-template>
+<button type="button" [routerLink]="['/']">Back to Ordering</button>

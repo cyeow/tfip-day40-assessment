@@ -21,6 +21,7 @@ import ibf2022.batch3.assessment.csf.orderbackend.services.OrderException;
 import ibf2022.batch3.assessment.csf.orderbackend.services.OrderingService;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 
 @RestController
@@ -55,16 +56,33 @@ public class OrderController {
 									.add("error", e.getMessage())
 									.build().toString());
 		}
-
 	}
 
 	// TODO: Task 6 - GET /api/orders/<email>
-	@GetMapping(path = "/orders/{email}")
+	@GetMapping(path = "/orders/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getOrdersByEmail(@PathVariable String email) {
+		List<PizzaOrder> orders = orderSvc.getPendingOrdersByEmail(email);
 		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		if (orders.size() > 0) {
+			JsonArrayBuilder ab = Json.createArrayBuilder();
+			orders.forEach(o -> {
+				ab.add(Json.createObjectBuilder()
+						.add("orderId", o.getOrderId())
+						.add("total", o.getTotal())
+						.add("date", o.getDate().toString())
+						.build());
+
+			});
+
+			return ResponseEntity.status(HttpStatus.OK)
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(ab.build().toString());
+
+		}
+		return ResponseEntity.status(HttpStatus.OK)
 				.contentType(MediaType.APPLICATION_JSON)
-				.body("{}");
+				.body("[]");
+
 	}
 
 	// TODO: Task 7 - DELETE /api/order/<orderId>

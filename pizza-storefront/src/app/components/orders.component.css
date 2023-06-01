@@ -1,0 +1,10 @@
+.order {
+    border: 1px solid black; 
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+    width: 50vw; 
+    height: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 8px;
+}

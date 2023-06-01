@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http"
 import { Injectable, inject } from "@angular/core"
 import { Observable } from 'rxjs';
-import { OrderReq } from "./models";
+import { OrderPending, OrderReq } from "./models";
 
 @Injectable()
 export class PizzaService {
@@ -28,7 +28,9 @@ export class PizzaService {
   // TODO: Task 5
   // You may add any parameters and return any type from getOrders() method
   // Do not change the method name
-  getOrders() {
+  getOrders(email: string): Observable<OrderPending[]> {
+    const headers = new HttpHeaders().set("Accept", "application/json")
+    return this.http.get<OrderPending[]>(this.urlPrefix + 'orders/' + email, { headers })
   }
 
   // TODO: Task 7
