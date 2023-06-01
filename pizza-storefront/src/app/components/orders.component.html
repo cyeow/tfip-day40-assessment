@@ -1,1 +1,7 @@
-<p>orders works!</p>
+<h2>Orders for {{ email }}</h2>
+<div *ngIf="ordersPending$ | async as orders else loading">
+<h3>hello</h3>
+</div>
+<ng-template #loading>
+    <p>Loading...</p>
+</ng-template>

@@ -15,8 +15,6 @@ public class PendingOrdersRepository {
 	@Qualifier("pending-orders")
 	private RedisTemplate<String, String> template;
 
-	private static final String KEY_ORDERS = "pending_orders";
-
 	// TODO: Task 3
 	// WARNING: Do not change the method's signature.
 	public void add(PizzaOrder order) {
@@ -28,7 +26,7 @@ public class PendingOrdersRepository {
 				.add("email", order.getEmail())
 				.build().toString();
 
-		template.opsForValue().append(KEY_ORDERS, jsonOrder);
+		template.opsForValue().append(order.getOrderId(), jsonOrder);
 	}
 
 	// TODO: Task 7

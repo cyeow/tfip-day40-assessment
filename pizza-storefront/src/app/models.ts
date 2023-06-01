@@ -17,3 +17,9 @@ export interface OrderReq {
     toppings: string[]
     comments: string
 }
+
+export interface OrderPending {
+    orderId: string
+    date: Date
+    total: number
+}

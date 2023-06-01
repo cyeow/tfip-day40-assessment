@@ -22,7 +22,7 @@ public class OrdersRepository {
 	// Native MongoDB query here for add()
 	// db.orders.insertOne({
 	// _id: '123456',
-	// date: '2023-05-31T10:22:33.1234563',
+	// date: ISODate("1970-07-15T00:28:51.140Z"),
 	// total: 23.1,
 	// name: 'dory',
 	// email: 'fish@dory.com',

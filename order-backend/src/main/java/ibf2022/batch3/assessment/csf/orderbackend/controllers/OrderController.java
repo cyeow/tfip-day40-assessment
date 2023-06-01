@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +59,13 @@ public class OrderController {
 	}
 
 	// TODO: Task 6 - GET /api/orders/<email>
+	@GetMapping(path = "/orders/{email}")
+	public ResponseEntity<String> getOrdersByEmail(@PathVariable String email) {
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body("{}");
+	}
 
 	// TODO: Task 7 - DELETE /api/order/<orderId>
 
